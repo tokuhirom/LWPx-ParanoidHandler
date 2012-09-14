@@ -6,18 +6,25 @@ our $VERSION = '0.01';
 use parent qw/Exporter/;
 use Net::DNS::Paranoid;
 
-our @EXPORT = qw/paranoid_handler/;
+our @EXPORT = qw/make_paranoid/;
 
-sub paranoid_handler {
+sub make_paranoid {
+    my ($ua, $paranoid) = @_;
+    $ua->add_handler(request_send => _paranoid_handler($paranoid));
+}
+
+sub _paranoid_handler {
     my ($paranoid) = @_;
     $paranoid ||= Net::DNS::Paranoid->new();
 
     sub {
         my ($request, $ua, $h) = @_;
+        $request->{_time_begin} ||= time();
 
         my $host = $request->uri->host;
-        if ($paranoid->is_bad_host($host)) {
-            my $err_res = HTTP::Response->new(403, "Unauthorized access to blocked host");
+        my ($addrs, $errmsg) = $paranoid->resolve($host, $request->{_time_begin});
+        if ($errmsg) {
+            my $err_res = HTTP::Response->new(403, "Unauthorized access to blocked host($errmsg)");
             $err_res->request($request);
             $err_res->header("Client-Warning" => "Internal response");
             $err_res->header("Content-Type" => "text/plain");
@@ -43,7 +50,7 @@ LWPx::ParanoidHandler - Handler for LWP::UserAgent that protects you from harm
     use LWP::UserAgent;
 
     my $ua = LWP::UserAgent->new();
-    $ua->add_handler(request_send => paranoid_handler());
+    make_paranoid($ua);
 
     my $res = $ua->request(GET 'http://127.0.0.1/');
     # my $res = $ua->request(GET 'http://google.com/');
@@ -52,13 +59,32 @@ LWPx::ParanoidHandler - Handler for LWP::UserAgent that protects you from harm
 
 =head1 DESCRIPTION
 
-LWPx::ParanoidHandler is
+LWPx::ParanoidHandler is clever firewall for LWP::UserAgent.
+This module provides a handler to protect a request to internal servers.
+
+It's useful to implement OAuth servers, crawlers, etc.
+
+=head1 FUNCTIONS
+
+=over 4
+
+=item make_paranoid($ua[, $dns]);
+
+Make your LWP::UserAgent instance to paranoid.
+
+The $dns argument is instance of L<Net::DNS::Paranoid>. It's optional.
+
+=back
 
 =head1 AUTHOR
 
 Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF@ GMAIL COME<gt>
 
 =head1 SEE ALSO
+
+L<LWPx::ParanoidAgent> have same feature as this module. But it's not currently maintain, and it's too hacky. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
+
+This module uses a lot of code taken from LWPx::ParanoidAgent, thanks.
 
 =head1 LICENSE
 

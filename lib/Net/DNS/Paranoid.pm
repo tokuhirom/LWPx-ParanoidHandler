@@ -14,7 +14,7 @@ sub new {
     my %args = @_ ==1 ? %{$_[0]} : @_;
     $args{resolver} ||= Net::DNS::Resolver->new;
     $args{whitelisted_hosts} ||= [];
-    $args{blacklisted_hosts} ||= [];
+    $args{blocked_hosts} ||= [];
     bless {
         timeout => 15,
         %args
@@ -22,10 +22,11 @@ sub new {
 }
 
 sub resolve {
-    my ($self, $name, $timeout) = @_;
+    my ($self, $name, $start_time, $timeout) = @_;
+    $start_time = time() if not defined $start_time;
     $timeout = $self->timeout if not defined $timeout;
 
-    my ($addrs, $errmsg) = $self->resolve($name, time(), $timeout);
+    my ($addrs, $errmsg) = $self->_resolve($name, $start_time, $timeout);
     return ($addrs, $errmsg);
 }
 
@@ -99,7 +100,8 @@ sub _host_list_match {
     }
 }
 
-sub is_bad_host {
+
+sub _bad_host {
     my $self = shift;
     my $host = lc(shift);
  
@@ -184,4 +186,59 @@ sub is_bad_host {
 }
 
 1;
+__END__
 
+=head1 NAME
+
+Net::DNS::Paranoid - paranoid dns resolver
+
+=head1 DESCRIPTION
+
+This is a wrapper module for Net::DNS.
+
+This module detects IP address / host names for internal servers.
+
+=head1 METHODS
+
+=over 4
+
+=item my $dns = Net::DNS::Paranoid->new(%args)
+
+Create new instance with following parameters:
+
+=over 4
+
+=item timeout
+
+DNS lookup timeout in secs.
+
+Default: 15 sec.
+
+=item blocked_hosts: ArrayRef[Str|RegExp|Code]
+
+List of blocked hosts in string, regexp or coderef.
+
+=item whitelisted_hosts: ArrayRef[Str|RegExp|Code]
+
+List of whitelisted hosts in string, regexp or coderef.
+
+=item resolver: Net::DNS::Resolver
+
+DNS resolver object, have same interface as Net::DNS::Resolver.
+
+=back
+
+=back
+
+=head1 THANKS TO
+
+Most of code was taken from L<LWPx::ParanoidAgent>.
+
+=head1 LICENSE
+
+Copyright (C) Tokuhiro Matsuno
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
