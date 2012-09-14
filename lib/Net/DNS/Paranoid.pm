@@ -256,6 +256,22 @@ $timeout is a timeout value. Default value is $dns->timeout.
 
 =back
 
+=head1 USE WITH Furl
+
+You can use L<Net::DNS::Paranoid> with Furl!
+
+    use Furl::HTTP;
+    use Net::DNS::Paranoid;
+
+    my $resolver = Net::DNS::Paranoid->new();
+    my $furl = Furl->new(
+        inet_aton => sub {
+            my ($host, $errmsg) = $resolver->resolve($_[0], time(), $_[1]);
+            die $errmsg unless $host;
+            Socket::inet_aton($host->[0]);
+        }
+    );
+
 =head1 THANKS TO
 
 Most of code was taken from L<LWPx::ParanoidAgent>.
