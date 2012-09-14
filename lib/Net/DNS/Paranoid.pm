@@ -192,6 +192,23 @@ __END__
 
 Net::DNS::Paranoid - paranoid dns resolver
 
+=head1 SYNOPSIS
+
+    my $dns = Net::DNS::Paranoid->new();
+    $dns->blocked_hosts([
+        'mixi.jp',
+        qr{\.dev\.example\.com$},
+    ]);
+    $dns->whitelisted_hosts([
+        'twitter.com',
+    ]);
+    my ($addrs, $errmsg) = $dns->resolve('mixi.jp');
+    if ($addrs) {
+        print @$addrs, $/;
+    } else {
+        die $errmsg;
+    }
+
 =head1 DESCRIPTION
 
 This is a wrapper module for Net::DNS.
@@ -227,6 +244,15 @@ List of whitelisted hosts in string, regexp or coderef.
 DNS resolver object, have same interface as Net::DNS::Resolver.
 
 =back
+
+=item my ($addrs, $err) = $dns->resolve($name[, $start_time[, $timeout]])
+
+Resolve a host name using DNS. If it's bad host, then returns $addrs as undef, and $err is the reason in string.
+
+$start_time is a time to start your operation. Timeout value was counted from it.
+Default value is time().
+
+$timeout is a timeout value. Default value is $dns->timeout.
 
 =back
 
