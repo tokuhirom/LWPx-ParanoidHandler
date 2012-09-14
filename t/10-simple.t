@@ -38,7 +38,7 @@ my $mock_resolver = do {
 my $ua = LWP::UserAgent->new;
 ok((ref $ua) =~ /LWP::UserAgent/);
 my $dns = Net::DNS::Paranoid->new(resolver => $mock_resolver);
-$ua->add_handler(request_send => paranoid_handler($dns));
+make_paranoid($ua, $dns);
 
 my ($HELPER_IP, $HELPER_PORT) = ("127.66.74.70", 9001);
 
