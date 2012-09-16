@@ -1,12 +1,14 @@
 Build.PL
 Changes
 lib/LWPx/ParanoidHandler.pm
-lib/Net/DNS/Paranoid.pm
+LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
+README
 t/00_compile.t
 t/10-simple.t
 t/15-timeout.t
-t/20-dns.t
 t/MockResolver.pm
 xt/01_podspell.t
 xt/02_perlcritic.t
@@ -14,7 +16,3 @@ xt/03_pod.t
 xt/04_minimum_version.t
 xt/05_cpan_meta.t
 xt/06_meta_author.t
-README
-LICENSE
-META.yml
-META.json

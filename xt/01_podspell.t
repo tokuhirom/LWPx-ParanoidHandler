@@ -58,3 +58,6 @@ Gosuke
 Miyashita
 mysqldiff
 mmm
+OAuth
+OpenID
+hacky
