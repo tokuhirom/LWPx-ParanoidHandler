@@ -1,5 +1,9 @@
 Revision history for Perl extension LWPx::ParanoidHandler
 
+0.05
+
+    - fixed deps
+
 0.04
 
     - split package with Net::DNS::Parnoid

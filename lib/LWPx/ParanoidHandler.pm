@@ -2,7 +2,7 @@ package LWPx::ParanoidHandler;
 use strict;
 use warnings;
 use 5.008008;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 use parent qw/Exporter/;
 use Net::DNS::Paranoid;
 
