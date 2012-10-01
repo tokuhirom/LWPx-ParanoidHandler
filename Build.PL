@@ -15,7 +15,7 @@ my $build = Module::Build->new(
         'Exporter'                      => '0',
         'parent'                        => '0',
         perl                            => '5.010001',
-        'Net::DNS::Paranoid'            => '0.04',
+        'Net::DNS::Paranoid'            => '0.07',
         'LWP'                           => 6,
     },
 
