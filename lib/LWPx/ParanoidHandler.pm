@@ -76,6 +76,29 @@ The $dns argument is instance of L<Net::DNS::Paranoid>. It's optional.
 
 =back
 
+=head1 FAQ
+
+=over 4
+
+=item How can I timeout per request?
+
+Yes, L<LWP::UserAgent> does not timeouts per request.
+
+I think it's my job. But L<LWPx::ParanoidAgent> do this.
+
+You can do this by following form using alarm():
+
+    my $res = eval {
+        local $SIG{ALRM} = sub { die "ALRM\n" };
+        alarm(10);
+        my $res = $ua->get($url);
+        alarm(0);
+        $res;
+    };
+    $res = HTTP::Response->new(500, 'Timeout') unless $res;
+
+=back
+
 =head1 AUTHOR
 
 Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF@ GMAIL COME<gt>
