@@ -97,6 +97,8 @@ You can do this by following form using alarm():
     };
     $res = HTTP::Response->new(500, 'Timeout') unless $res;
 
+And I recommend to use L<Furl>. Furl can handle per-request timeout cleanly.
+
 =back
 
 =head1 AUTHOR
