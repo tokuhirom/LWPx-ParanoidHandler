@@ -1,5 +1,10 @@
 Revision history for Perl extension LWPx::ParanoidHandler
 
+0.06
+    
+    [NO FEATURE CHANGES]
+    - docs about timeout
+
 0.05
 
     - fixed deps
