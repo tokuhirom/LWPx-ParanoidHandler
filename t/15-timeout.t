@@ -7,6 +7,8 @@ use Test::More tests => 6;
 use Test::Requires qw(LWP::Protocol::PSGI Plack::Request Test::TCP HTTP::Server::PSGI);
 
 my $ua = LWP::UserAgent->new();
+$ua->env_proxy;
+
 my $paranoid = Net::DNS::Paranoid->new(
     whitelisted_hosts => [
         '127.0.0.1'

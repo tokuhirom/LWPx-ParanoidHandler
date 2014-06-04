@@ -36,6 +36,8 @@ my $mock_resolver = do {
 };
 
 my $ua = LWP::UserAgent->new;
+$ua->env_proxy;
+
 ok((ref $ua) =~ /LWP::UserAgent/);
 my $dns = Net::DNS::Paranoid->new(resolver => $mock_resolver);
 make_paranoid($ua, $dns);
@@ -48,6 +50,8 @@ $dns->blocked_hosts( [ qr/\.lj$/, "1.2.3.6", ] );
 
 subtest 'hostnames pointing to internal IPs' => sub {
     my $ua = LWP::UserAgent->new();
+    $ua->env_proxy;
+
     my $dns = Net::DNS::Paranoid->new(resolver => $mock_resolver);
     make_paranoid($ua, $dns);
 
@@ -58,6 +62,8 @@ subtest 'hostnames pointing to internal IPs' => sub {
 
 subtest 'random IP address forms' => sub {
     my $ua = LWP::UserAgent->new();
+    $ua->env_proxy;
+
     make_paranoid($ua);
 
     my $res = $ua->get("http://0x7f.1/");
@@ -77,6 +83,8 @@ subtest 'random IP address forms' => sub {
 subtest 'test the the blocked host above in decimal form is blocked by this non-decimal form' => sub {
     note 'trying';
     my $ua = LWP::UserAgent->new();
+    $ua->env_proxy;
+
     make_paranoid($ua, $dns);
 
     my $res = $ua->get("http://0x01.02.0x306/");
@@ -85,6 +93,8 @@ subtest 'test the the blocked host above in decimal form is blocked by this non-
 
 subtest 'more blocked spaces' => sub {
     my $ua = LWP::UserAgent->new();
+    $ua->env_proxy;
+
     make_paranoid($ua, $dns);
 
     my $res = $ua->get("http://192.0.2.13/");
@@ -95,6 +105,8 @@ subtest 'more blocked spaces' => sub {
 
 subtest 'hostnames doing CNAMEs (this one resolves to "brad.lj", which is verboten)' => sub {
     my $ua = LWP::UserAgent->new();
+    $ua->env_proxy;
+
     make_paranoid($ua, $dns);
 
     my $res = $ua->get("http://bradlj-fortest.danga.com/");
@@ -103,6 +115,7 @@ subtest 'hostnames doing CNAMEs (this one resolves to "brad.lj", which is verbot
 };
 my $res;
 my $ua = LWP::UserAgent->new();
+$ua->env_proxy;
 make_paranoid($ua, $dns);
 
 subtest "can't do empty host name" => sub {
@@ -173,6 +186,8 @@ exit;
 
 sub new_ua {
     my $ua = LWP::UserAgent->new(timeout => 5);
+    $ua->env_proxy;
+
     my $dns = Net::DNS::Paranoid->new(@_);
     make_paranoid($ua, $dns);
     return $ua;
