@@ -2,7 +2,7 @@ package LWPx::ParanoidHandler;
 use strict;
 use warnings;
 use 5.008008;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 use parent qw/Exporter/;
 use Net::DNS::Paranoid;
 
@@ -59,7 +59,7 @@ LWPx::ParanoidHandler - Handler for LWP::UserAgent that protects you from harm
 
 =head1 DESCRIPTION
 
-LWPx::ParanoidHandler is clever firewall for LWP::UserAgent.
+LWPx::ParanoidHandler is clever fire wall for LWP::UserAgent.
 This module provides a handler to protect a request to internal servers.
 
 It's useful to implement OpenID servers, crawlers, etc.
@@ -107,7 +107,7 @@ Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF@ GMAIL COME<gt>
 
 =head1 SEE ALSO
 
-L<LWPx::ParanoidAgent> have same feature as this module. But it's not currently maintain, and it's too hacky. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
+L<LWPx::ParanoidAgent> have same feature as this module. But it's not currently maintain, and it's too hack-ish. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
 
 This module uses a lot of code taken from LWPx::ParanoidAgent, thanks.
 

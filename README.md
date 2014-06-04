@@ -17,7 +17,7 @@ LWPx::ParanoidHandler - Handler for LWP::UserAgent that protects you from harm
 
 # DESCRIPTION
 
-LWPx::ParanoidHandler is clever firewall for LWP::UserAgent.
+LWPx::ParanoidHandler is clever fire wall for LWP::UserAgent.
 This module provides a handler to protect a request to internal servers.
 
 It's useful to implement OpenID servers, crawlers, etc.
@@ -57,7 +57,7 @@ Tokuhiro Matsuno <tokuhirom AAJKLFJEF@ GMAIL COM>
 
 # SEE ALSO
 
-[LWPx::ParanoidAgent](https://metacpan.org/pod/LWPx::ParanoidAgent) have same feature as this module. But it's not currently maintain, and it's too hacky. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
+[LWPx::ParanoidAgent](https://metacpan.org/pod/LWPx::ParanoidAgent) have same feature as this module. But it's not currently maintain, and it's too hack-ish. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
 
 This module uses a lot of code taken from LWPx::ParanoidAgent, thanks.
 
