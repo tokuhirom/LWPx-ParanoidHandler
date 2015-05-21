@@ -59,10 +59,13 @@ LWPx::ParanoidHandler - Handler for LWP::UserAgent that protects you from harm
 
 =head1 DESCRIPTION
 
-LWPx::ParanoidHandler is clever fire wall for LWP::UserAgent.
-This module provides a handler to protect a request to internal servers.
+LWPx::ParanoidHandler is a clever firewall for L<LWP::UserAgent>.
 
-It's useful to implement OpenID servers, crawlers, etc.
+This module provides a handler to prevent a request from reaching or
+being (re)directed to internal servers, loopbacks, or multicast
+addresses.
+
+It is useful when implementing OpenID servers, crawlers, etc.
 
 =head1 FUNCTIONS
 
@@ -70,9 +73,11 @@ It's useful to implement OpenID servers, crawlers, etc.
 
 =item make_paranoid($ua[, $dns]);
 
-Make your LWP::UserAgent instance to paranoid.
+Make your LWP::UserAgent instance paranoid.
 
-The $dns argument is instance of L<Net::DNS::Paranoid>. It's optional.
+The optional $dns argument is an instance of L<Net::DNS::Paranoid>.
+Useful if you want to add your own blocked_hosts or whitelisted_hosts,
+or adjust the timeout on DNS lookups.
 
 =back
 
@@ -80,13 +85,18 @@ The $dns argument is instance of L<Net::DNS::Paranoid>. It's optional.
 
 =over 4
 
-=item How can I timeout per request?
+=item How can I set a timeout for the whole request?
 
-Yes, L<LWP::UserAgent> does not timeouts per request.
+L<LWP::UserAgent> does not provide a timeout over the whole request
+(its timeout is only on inactivity on the server connection). Since
+LWPx::ParanoidHandler uses LWP::UserAgent's handler protocol, it
+cannot change this.
 
-I think it's my job. But L<LWPx::ParanoidAgent> do this.
+You may want to protect your whole request with a timeout to stop it
+getting stuck in a malicious tar-pit (as provided by the timeout in
+L<LWPx::ParanoidAgent>).
 
-You can do this by following form using alarm():
+You can do this as follows by using alarm():
 
     my $res = eval {
         local $SIG{ALRM} = sub { die "ALRM\n" };
@@ -97,7 +107,8 @@ You can do this by following form using alarm():
     };
     $res = HTTP::Response->new(500, 'Timeout') unless $res;
 
-And I recommend to use L<Furl>. Furl can handle per-request timeout cleanly.
+And I recommend using L<Furl>. Furl can handle per-request timeouts
+cleanly.
 
 =back
 
@@ -107,7 +118,9 @@ Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF@ GMAIL COME<gt>
 
 =head1 SEE ALSO
 
-L<LWPx::ParanoidAgent> have same feature as this module. But it's not currently maintain, and it's too hack-ish. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
+L<LWPx::ParanoidAgent> has the same feature as this module. But it's
+not currently maintained, and it's too hack-ish. LWPx::ParanoidHandler
+uses the handler protocol provided by LWP::UserAgent, which is safer.
 
 This module uses a lot of code taken from LWPx::ParanoidAgent, thanks.
 

@@ -17,28 +17,38 @@ LWPx::ParanoidHandler - Handler for LWP::UserAgent that protects you from harm
 
 # DESCRIPTION
 
-LWPx::ParanoidHandler is clever fire wall for LWP::UserAgent.
-This module provides a handler to protect a request to internal servers.
+LWPx::ParanoidHandler is a clever firewall for [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent).
 
-It's useful to implement OpenID servers, crawlers, etc.
+This module provides a handler to prevent a request from reaching or
+being (re)directed to internal servers, loopbacks, or multicast
+addresses.
+
+It is useful when implementing OpenID servers, crawlers, etc.
 
 # FUNCTIONS
 
 - make\_paranoid($ua\[, $dns\]);
 
-    Make your LWP::UserAgent instance to paranoid.
+    Make your LWP::UserAgent instance paranoid.
 
-    The $dns argument is instance of [Net::DNS::Paranoid](https://metacpan.org/pod/Net::DNS::Paranoid). It's optional.
+    The optional $dns argument is an instance of [Net::DNS::Paranoid](https://metacpan.org/pod/Net::DNS::Paranoid).
+    Useful if you want to add your own blocked\_hosts or whitelisted\_hosts,
+    or adjust the timeout on DNS lookups.
 
 # FAQ
 
-- How can I timeout per request?
+- How can I set a timeout for the whole request?
 
-    Yes, [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent) does not timeouts per request.
+    [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent) does not provide a timeout over the whole request
+    (its timeout is only on inactivity on the server connection). Since
+    LWPx::ParanoidHandler uses LWP::UserAgent's handler protocol, it
+    cannot change this.
 
-    I think it's my job. But [LWPx::ParanoidAgent](https://metacpan.org/pod/LWPx::ParanoidAgent) do this.
+    You may want to protect your whole request with a timeout to stop it
+    getting stuck in a malicious tar-pit (as provided by the timeout in
+    [LWPx::ParanoidAgent](https://metacpan.org/pod/LWPx::ParanoidAgent)).
 
-    You can do this by following form using alarm():
+    You can do this as follows by using alarm():
 
         my $res = eval {
             local $SIG{ALRM} = sub { die "ALRM\n" };
@@ -49,7 +59,8 @@ It's useful to implement OpenID servers, crawlers, etc.
         };
         $res = HTTP::Response->new(500, 'Timeout') unless $res;
 
-    And I recommend to use [Furl](https://metacpan.org/pod/Furl). Furl can handle per-request timeout cleanly.
+    And I recommend using [Furl](https://metacpan.org/pod/Furl). Furl can handle per-request timeouts
+    cleanly.
 
 # AUTHOR
 
@@ -57,7 +68,9 @@ Tokuhiro Matsuno <tokuhirom AAJKLFJEF@ GMAIL COM>
 
 # SEE ALSO
 
-[LWPx::ParanoidAgent](https://metacpan.org/pod/LWPx::ParanoidAgent) have same feature as this module. But it's not currently maintain, and it's too hack-ish. LWPx::ParanoidHandler uses handler protocol provided by LWP::UserAgent, it's more safety.
+[LWPx::ParanoidAgent](https://metacpan.org/pod/LWPx::ParanoidAgent) has the same feature as this module. But it's
+not currently maintained, and it's too hack-ish. LWPx::ParanoidHandler
+uses the handler protocol provided by LWP::UserAgent, which is safer.
 
 This module uses a lot of code taken from LWPx::ParanoidAgent, thanks.
 
